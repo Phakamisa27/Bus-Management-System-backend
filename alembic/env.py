@@ -3,8 +3,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine, pool
 
-from app.models import Base  # noqa: F401 — importing registers all tables on Base.metadata
-from core.settings import get_settings
+from bus_backend.app.models import Base  # noqa: F401 — importing registers all tables on Base.metadata
+from bus_backend.core.settings import get_settings
 
 if context.config.config_file_name is not None:
     fileConfig(context.config.config_file_name)

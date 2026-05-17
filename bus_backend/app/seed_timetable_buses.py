@@ -13,9 +13,9 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import Bus, BusStatus, Company, User, UserRole
-from core.auth import hash_password
-from core.database import SessionLocal
+from bus_backend.app.models import Bus, BusStatus, Company, User, UserRole
+from bus_backend.core.auth import hash_password
+from bus_backend.core.database import SessionLocal
 
 logger = logging.getLogger(__name__)
 

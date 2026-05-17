@@ -5,8 +5,8 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.schemas import CompanyCreate, CompanyUpdate
-from app.models import Company
+from bus_backend.app.schemas import CompanyCreate, CompanyUpdate
+from bus_backend.app.models import Company
 
 
 def list_for_owner(db: Session, owner_id: uuid.UUID) -> list[Company]:

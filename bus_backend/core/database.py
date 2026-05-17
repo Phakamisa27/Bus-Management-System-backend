@@ -9,7 +9,7 @@ from collections.abc import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from core.settings import get_settings
+from bus_backend.core.settings import get_settings
 
 settings = get_settings()
 

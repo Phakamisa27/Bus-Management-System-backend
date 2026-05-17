@@ -5,8 +5,8 @@ import uuid
 from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
-from app.schemas import BusCreate, BusUpdate
-from app.models import Bus, BusLocation
+from bus_backend.app.schemas import BusCreate, BusUpdate
+from bus_backend.app.models import Bus, BusLocation
 
 
 def list_for_company(db: Session, company_id: uuid.UUID) -> list[Bus]:

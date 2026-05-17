@@ -5,9 +5,9 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.schemas import UserCreate
-from core.auth import hash_password
-from app.models import User
+from bus_backend.app.schemas import UserCreate
+from bus_backend.core.auth import hash_password
+from bus_backend.app.models import User
 
 
 def get_by_email(db: Session, email: str) -> User | None:
@@ -35,7 +35,7 @@ def authenticate(db: Session, email: str, password: str) -> User | None:
     user = get_by_email(db, email)
     if user is None:
         return None
-    from core.auth import verify_password
+    from bus_backend.core.auth import verify_password
 
     if not verify_password(password, user.hashed_password):
         return None

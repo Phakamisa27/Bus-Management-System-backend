@@ -5,11 +5,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.crud import users as users_crud
-from app.schemas import LoginRequest, Token, UserCreate, UserRead
-from app.database import get_db
-from app.models import User
-from core.auth import create_access_token, get_current_user
+from bus_backend.app.crud import users as users_crud
+from bus_backend.app.schemas import LoginRequest, Token, UserCreate, UserRead
+from bus_backend.app.database import get_db
+from bus_backend.app.models import User
+from bus_backend.core.auth import create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

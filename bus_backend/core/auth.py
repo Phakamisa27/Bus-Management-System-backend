@@ -16,9 +16,9 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models import User
-from core.settings import get_settings
+from bus_backend.app.database import get_db
+from bus_backend.app.models import User
+from bus_backend.core.settings import get_settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer(auto_error=False)

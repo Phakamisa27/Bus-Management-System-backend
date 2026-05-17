@@ -7,7 +7,7 @@ from datetime import date, datetime, time
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from app.models import BusStatus, UserRole
+from bus_backend.app.models import BusStatus, UserRole
 
 
 # --- Auth & User ---

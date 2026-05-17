@@ -12,10 +12,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.crud import buses as buses_crud
-from app.crud import companies as companies_crud
-from app.crud import routes as routes_crud
-from app.schemas import (
+from bus_backend.app.crud import buses as buses_crud
+from bus_backend.app.crud import companies as companies_crud
+from bus_backend.app.crud import routes as routes_crud
+from bus_backend.app.schemas import (
     BusCreate,
     BusLocationCreate,
     BusLocationRead,
@@ -24,9 +24,9 @@ from app.schemas import (
     RouteCreate,
     RouteRead,
 )
-from app.database import get_db
-from app.models import Bus, BusLocation, Route, User
-from core.auth import get_current_user
+from bus_backend.app.database import get_db
+from bus_backend.app.models import Bus, BusLocation, Route, User
+from bus_backend.core.auth import get_current_user
 
 router = APIRouter(prefix="/buses", tags=["buses"])
 routes_router = APIRouter(prefix="/routes", tags=["routes"])

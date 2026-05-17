@@ -1,8 +1,8 @@
 """
 FastAPI entrypoint.
 
-Run locally (from this bus_backend directory):
-  uvicorn main:app --reload
+Run locally (from repository root):
+  uvicorn bus_backend.main:app --reload
 
 Before first run, create the database and enable PostGIS:
   CREATE DATABASE bus_app;
@@ -16,10 +16,10 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth_routes, bus_routes, company_routes, timetable_routes
-from app.database import engine
-from app.models import Base
-from app.seed_timetable_buses import seed_timetable_buses_if_missing
+from bus_backend.api import auth_routes, bus_routes, company_routes, timetable_routes
+from bus_backend.app.database import engine
+from bus_backend.app.models import Base
+from bus_backend.app.seed_timetable_buses import seed_timetable_buses_if_missing
 
 
 @asynccontextmanager

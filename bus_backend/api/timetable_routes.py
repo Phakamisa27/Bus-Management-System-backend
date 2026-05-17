@@ -7,11 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.crud import companies as companies_crud
-from app.schemas import TimetableCreate, TimetableRead, TimetableUpdate
-from app.database import get_db
-from app.models import Bus, Timetable, User
-from core.auth import get_current_user
+from bus_backend.app.crud import companies as companies_crud
+from bus_backend.app.schemas import TimetableCreate, TimetableRead, TimetableUpdate
+from bus_backend.app.database import get_db
+from bus_backend.app.models import Bus, Timetable, User
+from bus_backend.core.auth import get_current_user
 
 router = APIRouter(prefix="/timetables", tags=["timetables"])
 

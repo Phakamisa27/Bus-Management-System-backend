@@ -1,6 +1,6 @@
-"""ORM models (re-exported from `models` for stable `app.models` imports)."""
+"""ORM models (re-exported from `bus_backend.models` for stable `app.models` imports)."""
 
-from models import (
+from bus_backend.models import (
     Base,
     Bus,
     BusLocation,

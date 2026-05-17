@@ -5,8 +5,8 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.schemas import RouteCreate
-from app.models import Route
+from bus_backend.app.schemas import RouteCreate
+from bus_backend.app.models import Route
 
 
 def list_routes(db: Session, skip: int = 0, limit: int = 100) -> list[Route]:
