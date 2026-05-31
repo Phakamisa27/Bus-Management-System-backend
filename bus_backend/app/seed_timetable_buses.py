@@ -20,11 +20,24 @@ from bus_backend.core.database import SessionLocal
 logger = logging.getLogger(__name__)
 
 # Must match bus_id values in data/timeTable.json — one unique row per timetable entry.
+# Each entry below is an independent tracking channel: a passenger sharing GPS for
+# one bus_id never affects what viewers see on a different bus_id.
 TIMETABLE_BUSES: list[tuple[uuid.UUID, str, str]] = [
+    # PM departures (Umlazi → Westmead)
     (
         uuid.UUID("5e1c3169-a012-44d9-a18c-561f0fff3a10"),
         "200",
         "ZD-200-U1-PM",
+    ),  
+    (
+        uuid.UUID("cb02bb3f-97f2-4ef5-8c17-338e61e4fd7d"),
+        "201",
+        "ZD-201-U1-PM",
+    ), 
+    (
+        uuid.UUID("8f0358df-68a1-49bb-a9f9-6079c91324e7"),
+        "202",
+        "ZD-202-U1-PM",
     ),
     (
         uuid.UUID("b6f7e2c4-7d3a-4f9b-8e1c-5d6f7a8b9c20"),
@@ -36,6 +49,7 @@ TIMETABLE_BUSES: list[tuple[uuid.UUID, str, str]] = [
         "200",
         "ZD-200-U5-PM",
     ),
+    # AM departures (Westmead → Umlazi)
     (
         uuid.UUID("d3a7b8c9-1e2f-4a5b-9c8d-7e6f5a4b3c40"),
         "200",
