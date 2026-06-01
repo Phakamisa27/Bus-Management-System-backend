@@ -26,6 +26,7 @@ from bus_backend.app.schemas import (
 )
 from bus_backend.app.database import get_db
 from bus_backend.app.models import Bus, BusLocation, Route, User
+from bus_backend.app.route_matching import is_location_on_route
 from bus_backend.core.auth import get_current_user
 
 router = APIRouter(prefix="/buses", tags=["buses"])
@@ -156,13 +157,22 @@ def post_bus_location(
     """Record a GPS point for a bus.
 
     MVP policy: any authenticated user (passenger, driver, admin, …) may post a
-    location for any existing bus. We only reject when the caller is not
-    authenticated (handled upstream by `get_current_user`) or when `bus_id`
-    does not exist.
+    location for any existing bus. We reject when the caller is not
+    authenticated (handled upstream by `get_current_user`), when `bus_id` does
+    not exist, or when the GPS point is too far from the bus's route (basic
+    anti-spoofing — see `route_matching.py`).
     """
     row = buses_crud.get(db, bus_id)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Bus not found")
+
+    # Route matching: only accept locations near this bus's known route path.
+    if not is_location_on_route(bus_id, data.latitude, data.longitude):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Location rejected: too far from this route.",
+        )
+
     return buses_crud.create_location(
         db,
         bus_id=bus_id,
