@@ -26,7 +26,8 @@ from bus_backend.app.schemas import (
 )
 from bus_backend.app.database import get_db
 from bus_backend.app.models import Bus, BusLocation, Route, User
-from bus_backend.app.route_matching import is_location_on_route
+# Route matching paused — see bus_backend/app/route_matching.py
+# from bus_backend.app.route_matching import is_location_on_route
 from bus_backend.core.auth import get_current_user
 
 router = APIRouter(prefix="/buses", tags=["buses"])
@@ -166,12 +167,13 @@ def post_bus_location(
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Bus not found")
 
-    # Route matching: only accept locations near this bus's known route path.
-    if not is_location_on_route(bus_id, data.latitude, data.longitude):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Location rejected: too far from this route.",
-        )
+    # Route matching paused — verification by points is on hold, so all
+    # locations are accepted for now. Re-enable in route_matching.py.
+    # if not is_location_on_route(bus_id, data.latitude, data.longitude):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Location rejected: too far from this route.",
+    #     )
 
     return buses_crud.create_location(
         db,
