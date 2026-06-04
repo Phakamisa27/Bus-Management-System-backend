@@ -69,6 +69,7 @@ class User(Base):
         foreign_keys="Company.owner_id",
     )
     bus_locations: Mapped[list["BusLocation"]] = relationship(back_populates="user")
+    password_resets: Mapped[list["PasswordReset"]] = relationship(back_populates="user")
 
 
 class Company(Base):
@@ -188,3 +189,26 @@ class BusLocation(Base):
 
     bus: Mapped[Bus] = relationship(back_populates="locations")
     user: Mapped[User] = relationship(back_populates="bus_locations")
+
+
+class PasswordReset(Base):
+    """One password-reset request: a single-use token with an expiry time."""
+
+    __tablename__ = "password_resets"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id"),
+        index=True,
+        nullable=False,
+    )
+    token: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+    user: Mapped[User] = relationship(back_populates="password_resets")
