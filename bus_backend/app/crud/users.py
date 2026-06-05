@@ -31,6 +31,13 @@ def create_user(db: Session, data: UserCreate) -> User:
     return user
 
 
+def set_password(db: Session, user: User, new_password: str) -> User:
+    """Hash and store a new password (same hashing used at registration)."""
+    user.hashed_password = hash_password(new_password)
+    db.add(user)
+    return user
+
+
 def authenticate(db: Session, email: str, password: str) -> User | None:
     user = get_by_email(db, email)
     if user is None:

@@ -12,6 +12,7 @@ from bus_backend.app.schemas import (
     ForgotPasswordRequest,
     LoginRequest,
     MessageResponse,
+    ResetPasswordRequest,
     Token,
     UserCreate,
     UserRead,
@@ -66,6 +67,40 @@ def forgot_password(
         except Exception:
             logger.exception("Failed to send password reset email")
     return MessageResponse(message=FORGOT_PASSWORD_MESSAGE)
+
+
+@router.post("/reset-password", response_model=MessageResponse)
+def reset_password(
+    data: ResetPasswordRequest,
+    db: Annotated[Session, Depends(get_db)],
+) -> MessageResponse:
+    """
+    Complete a password reset using the token emailed to the user.
+
+    The token must exist, be unexpired, and be unused. On success the user's
+    password is re-hashed (same scheme as registration), the token is marked
+    `used` so it cannot be reused, and both changes are committed together.
+    """
+    reset = password_resets_crud.get_by_token(db, data.token)
+    if reset is None or not password_resets_crud.is_valid(reset):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token.",
+        )
+
+    user = users_crud.get_by_id(db, reset.user_id)
+    if user is None:
+        # User was deleted after the token was issued; treat as invalid.
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token.",
+        )
+
+    users_crud.set_password(db, user, data.new_password)
+    password_resets_crud.mark_used(db, reset)
+    db.commit()
+
+    return MessageResponse(message="Password reset successful.")
 
 
 @router.get("/me", response_model=UserRead)
