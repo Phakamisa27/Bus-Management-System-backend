@@ -1,22 +1,20 @@
 """
-Email sending helpers (SMTP).
+Email sending helpers (Resend).
 
-Uses the standard library `smtplib` so no extra dependency is required.
-All connection details are read from settings (which load from the `.env`
-file / environment) — nothing is hardcoded.
+Uses the Resend Python SDK (HTTPS API) instead of SMTP, which works on
+hosts that block outbound SMTP (e.g. Render).
 
-Gmail setup:
-    1. Enable 2-Step Verification on the Google account.
-    2. Create an "App Password": Google Account -> Security -> App passwords.
-    3. Put that 16-character App Password in the `.env` file as SMTP_PASSWORD.
-       (Do NOT use your normal Gmail login password, and never commit it.)
+Configuration is read from settings (which load from `.env` / environment):
+    RESEND_API_KEY — API key from the Resend dashboard
+    EMAIL_FROM     — verified sender address (e.g. "App <noreply@yourdomain.com>")
+    FRONTEND_URL   — base URL for password-reset links
 """
 
 from __future__ import annotations
 
 import logging
-import smtplib
-from email.message import EmailMessage
+
+import resend
 
 from bus_backend.core.settings import get_settings
 
@@ -25,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 def send_email(to_address: str, subject: str, body: str) -> None:
     """
-    Send a plain-text email via SMTP using STARTTLS (e.g. Gmail on port 587).
+    Send a plain-text email via Resend.
 
     Raises on failure so the caller can decide how to handle it. The
     forgot-password route deliberately swallows that error and still returns
@@ -33,16 +31,16 @@ def send_email(to_address: str, subject: str, body: str) -> None:
     """
     settings = get_settings()
 
-    message = EmailMessage()
-    message["From"] = settings.email_from
-    message["To"] = to_address
-    message["Subject"] = subject
-    message.set_content(body)
+    resend.api_key = settings.resend_api_key
 
-    with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
-        server.starttls()
-        server.login(settings.smtp_username, settings.smtp_password)
-        server.send_message(message)
+    params: resend.Emails.SendParams = {
+        "from": settings.email_from,
+        "to": [to_address],
+        "subject": subject,
+        "text": body,
+    }
+
+    resend.Emails.send(params)
 
 
 def send_password_reset_email(to_address: str, token: str) -> None:

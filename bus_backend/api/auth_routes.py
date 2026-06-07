@@ -59,7 +59,7 @@ def forgot_password(
     user = users_crud.get_by_email(db, str(data.email))
     if user is not None:
         reset = password_resets_crud.create_for_user(db, user)
-        # Send the reset email. If sending fails (bad SMTP config, network,
+        # Send the reset email. If sending fails (bad Resend config, network,
         # etc.) we log it but still return the same safe message below, so the
         # response never reveals whether the email exists or that sending broke.
         try:
