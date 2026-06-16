@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from bus_backend.api import auth_routes, bus_routes, company_routes, timetable_routes
 from bus_backend.app.database import engine
 from bus_backend.app.models import Base
-from bus_backend.app.seed_timetable_buses import seed_timetable_buses_if_missing
+from bus_backend.core.seed_timetable_buses import seed_timetable_buses_if_missing
 
 
 @asynccontextmanager
