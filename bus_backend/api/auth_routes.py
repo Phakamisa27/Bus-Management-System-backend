@@ -56,14 +56,19 @@ def forgot_password(
     the email exists. If the user is found, a reset token (valid 30 minutes) is
     stored in `password_resets` and a reset email is sent to the user.
     """
+    logger.info("Forgot password requested for email: %s", data.email)
     user = users_crud.get_by_email(db, str(data.email))
+    logger.info("User found: %s", user is not None)
     if user is not None:
         reset = password_resets_crud.create_for_user(db, user)
+        logger.info("Password reset token created for user_id: %s", user.id)
         # Send the reset email. If sending fails (bad Resend config, network,
         # etc.) we log it but still return the same safe message below, so the
         # response never reveals whether the email exists or that sending broke.
         try:
+            logger.info("Calling Resend for password reset email")
             send_password_reset_email(user.email, reset.token)
+            logger.info("Resend email send completed")
         except Exception:
             logger.exception("Failed to send password reset email")
     return MessageResponse(message=FORGOT_PASSWORD_MESSAGE)
