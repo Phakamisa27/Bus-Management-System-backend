@@ -54,13 +54,33 @@ class MessageResponse(BaseModel):
     message: str
 
 
+class CompanyRegisterRequest(BaseModel):
+    company_name: str = Field(..., min_length=1, max_length=255)
+    registration_number: str | None = Field(None, max_length=64)
+    contact_full_name: str = Field(..., min_length=1, max_length=255)
+    work_email: EmailStr
+    phone_number: str = Field(..., min_length=1, max_length=64)
+    password: str = Field(..., min_length=8, max_length=128)
+    number_of_buses: int | None = Field(None, ge=0)
+    main_routes: str | None = Field(None, max_length=5000)
+
+
+class CompanyRegisterResponse(BaseModel):
+    message: str
+    company_id: uuid.UUID
+    user_id: uuid.UUID
+
+
 # --- Company ---
 
 
 class CompanyBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
+    registration_number: str = ""
     address: str = ""
     phone: str = ""
+    number_of_buses: int | None = None
+    main_routes: str = ""
 
 
 class CompanyCreate(CompanyBase):
@@ -69,8 +89,11 @@ class CompanyCreate(CompanyBase):
 
 class CompanyUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=255)
+    registration_number: str | None = Field(None, max_length=64)
     address: str | None = None
     phone: str | None = None
+    number_of_buses: int | None = Field(None, ge=0)
+    main_routes: str | None = Field(None, max_length=5000)
 
 
 class CompanyRead(CompanyBase):

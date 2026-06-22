@@ -22,6 +22,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Text,
     Time,
     UniqueConstraint,
     func,
@@ -78,8 +79,11 @@ class Company(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     owner_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
+    registration_number: Mapped[str] = mapped_column(String(64), default="")
     address: Mapped[str] = mapped_column(String(512), default="")
     phone: Mapped[str] = mapped_column(String(64), default="")
+    number_of_buses: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    main_routes: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

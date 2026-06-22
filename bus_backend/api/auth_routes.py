@@ -6,9 +6,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from bus_backend.app.crud import companies as companies_crud
 from bus_backend.app.crud import password_resets as password_resets_crud
 from bus_backend.app.crud import users as users_crud
 from bus_backend.app.schemas import (
+    CompanyRegisterRequest,
+    CompanyRegisterResponse,
     ForgotPasswordRequest,
     LoginRequest,
     MessageResponse,
@@ -36,6 +39,22 @@ def register(data: UserCreate, db: Annotated[Session, Depends(get_db)]) -> User:
     if users_crud.get_by_email(db, str(data.email)):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
     return users_crud.create_user(db, data)
+
+
+@router.post("/company-register", response_model=CompanyRegisterResponse, status_code=status.HTTP_201_CREATED)
+def company_register(
+    data: CompanyRegisterRequest,
+    db: Annotated[Session, Depends(get_db)],
+) -> CompanyRegisterResponse:
+    if users_crud.get_by_email(db, str(data.work_email)):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    user, company = companies_crud.register_with_admin(db, data)
+    return CompanyRegisterResponse(
+        message="Company account created. Please login.",
+        company_id=company.id,
+        user_id=user.id,
+    )
 
 
 @router.post("/login", response_model=Token)

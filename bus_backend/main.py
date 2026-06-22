@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from bus_backend.api import auth_routes, bus_routes, company_routes, timetable_routes
 from bus_backend.app.database import engine
 from bus_backend.app.models import Base
+from bus_backend.core.seed_admin_users import seed_admin_users_if_registered
 from bus_backend.core.seed_timetable_buses import seed_timetable_buses_if_missing
 
 
@@ -27,6 +28,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     # Dev convenience: creates tables. For production, prefer Alembic migrations.
     Base.metadata.create_all(bind=engine)
     seed_timetable_buses_if_missing()
+    seed_admin_users_if_registered()
     yield
 
 
